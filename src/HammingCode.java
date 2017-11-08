@@ -8,36 +8,43 @@ import java.util.*;
 public class HammingCode {
     private static int r = 3;
     private static int messageLength = 200;
-    private static int chunkSize = ((int)Math.pow(2,r) - r -1);
-    private static int parityChunkSize = chunkSize+r;
+    private static int chunkSize = ((int) Math.pow(2, r) - r - 1);
+    private static int parityChunkSize = chunkSize + r;
+
     public static void main(String[] args) {
 //        Boolean[] test = {true,false,true,false,true,false};
 //        List t = Arrays.asList(test).subList(0,4);
 //        test(t);
         Random rand = new Random();
         List<Boolean> message = new ArrayList<>();
-        for(int i=0 ; i< chunkSize; i++){
+        for (int i = 0; i < chunkSize * 2; i++) {
+//            System.out.println(i);
+            if ((i) % chunkSize == 0) message.clear();
+
             message.add(rand.nextBoolean());
+//            }
+            System.out.println(Arrays.toString(message.toArray()));
 //            message[i] = rand.nextBoolean();
         }
-
-        for (int i = 0 ; i < message.size(); i++) {
-            System.out.println(Arrays.toString(message.toArray()));
-//            message.toArray();
-            List<Boolean> encodedChunk = makeChunk(message, r);
-//            System.out.println();
-            System.out.println("Encoded String is "+Arrays.toString(encodedChunk.toArray()));
-            encodedChunk.set(i ,!encodedChunk.get(i));
-//            System.out.println();
-            System.out.println("Flipped String is "+ Arrays.toString(encodedChunk.toArray()));
-            List<Boolean> decodedChunk = decodeChunk(encodedChunk, r);
-            System.out.println(Arrays.toString(decodedChunk.toArray()));
-//            System.out.println(Arrays.toString(decodedChunk));
-            System.out.println(decodedChunk.equals(message) + "\n");
-//            System.out.println(Collections.equals(decodedChunk, message)+"\n");
-        }
+//
+//        for (int i = 0 ; i < message.size(); i++) {
+//            System.out.println(Arrays.toString(message.toArray()));
+////            message.toArray();
+//            List<Boolean> encodedChunk = makeChunk(message, r);
+////            System.out.println();
+//            System.out.println("Encoded String is "+Arrays.toString(encodedChunk.toArray()));
+//            encodedChunk.set(i ,!encodedChunk.get(i));
+////            System.out.println();
+//            System.out.println("Flipped String is "+ Arrays.toString(encodedChunk.toArray()));
+//            List<Boolean> decodedChunk = decodeChunk(encodedChunk, r);
+//            System.out.println(Arrays.toString(decodedChunk.toArray()));
+////            System.out.println(Arrays.toString(decodedChunk));
+//            System.out.println(decodedChunk.equals(message) + "\n");
+////            System.out.println(Collections.equals(decodedChunk, message)+"\n");
+//        }
     }
-    public static void test(List<Boolean> array){
+
+    public static void test(List<Boolean> array) {
         array.forEach(System.out::println);
     }
 
@@ -46,33 +53,33 @@ public class HammingCode {
         List<Boolean> retArray = new ArrayList<>();
         boolean wrongExists = false;
         int total = 0;
-        for (int i = 0;i < r;i++){
+        for (int i = 0; i < r; i++) {
             int count = 0;
             int numToJump = 1 << i;
-            int startPoint = numToJump -1;
-            while (startPoint < parityChunkSize){
-                for (int j = startPoint; j < (startPoint+numToJump);j++){
+            int startPoint = numToJump - 1;
+            while (startPoint < parityChunkSize) {
+                for (int j = startPoint; j < (startPoint + numToJump); j++) {
                     if (j == parityChunkSize) break;
-                    if (Integer.bitCount(j+1)!= 1 && array.get(j)) count++;
+                    if (Integer.bitCount(j + 1) != 1 && array.get(j)) count++;
                 }
-                startPoint+= numToJump* 2;
+                startPoint += numToJump * 2;
             }
-            if ((count % 2 == 0) == array.get(numToJump - 1)){
+            if ((count % 2 == 0) == array.get(numToJump - 1)) {
                 wrongExists = true;
                 total += numToJump;
             }
         }
 
-        if (wrongExists){
-            if ((total-1) < parityChunkSize){
-                array.set(total-1, !array.get(total-1));
+        if (wrongExists) {
+            if ((total - 1) < parityChunkSize) {
+                array.set(total - 1, !array.get(total - 1));
 //                array[total-1] = !array.get(total-1);
             }
         }
 
         int index = 0;
-        for (int i = 0; i < parityChunkSize;i++){
-            if (Integer.bitCount(i+1) != 1){
+        for (int i = 0; i < parityChunkSize; i++) {
+            if (Integer.bitCount(i + 1) != 1) {
                 retArray.add(array.get(i));
 //                retArray[index++] = array[i];
             }
@@ -85,8 +92,8 @@ public class HammingCode {
         List<Boolean> messageArray = new ArrayList<>();
 //        System.out.println("EM");
         int count = 0;
-        for (int i = 0; i < parityChunkSize;i++){
-            if (Integer.bitCount(i+1) != 1){
+        for (int i = 0; i < parityChunkSize; i++) {
+            if (Integer.bitCount(i + 1) != 1) {
 //                System.out.println("i is " + array.get(count));
                 messageArray.add(array.get(count++));
 //                messageArray[i] = array.get(count++);
@@ -103,26 +110,25 @@ public class HammingCode {
 //        assert (array.size()!= 0);
 //        System.out.println(array.size());
         array.toArray();
-        for (int i = 0;i < r;i++){
+        for (int i = 0; i < r; i++) {
             int count = 0;
             int numToJump = 1 << i;
-            int startPoint = numToJump -1;
+            int startPoint = numToJump - 1;
 
-            while (startPoint < (parityChunkSize)){
-                for (int j = startPoint; j < (startPoint+numToJump);j++){
+            while (startPoint < (parityChunkSize)) {
+                for (int j = startPoint; j < (startPoint + numToJump); j++) {
                     if (j == (parityChunkSize)) break;
-                    if (array.get(j)!= null && array.get(j)) count++;
+                    if (array.get(j) != null && array.get(j)) count++;
                 }
-                startPoint+= numToJump* 2;
+                startPoint += numToJump * 2;
 
             }
             //FIX THIS
             //TODO
 //            System.out.println(array.get(0));
-            array.set((1<<i)-1,!(count%2 ==0));
+            array.set((1 << i) - 1, !(count % 2 == 0));
         }
     }
-
 
 
 //    private static Boolean[] decodeChunk(Boolean[] array, int r) {
