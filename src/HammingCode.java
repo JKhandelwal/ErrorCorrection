@@ -1,39 +1,71 @@
 
 import java.lang.reflect.Array;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by jalajkhandelwal on 05/11/2017.
  */
 public class HammingCode {
-    private static int r = 3;
-    private static int messageLength = 43;
+    private static int r = 5;
+    private static int messageLength = 1000;
     private static int chunkSize = ((int) Math.pow(2, r) - r - 1);
     private static int parityChunkSize = chunkSize + r;
-    private static int paddingSize =0;
+    private static int paddingSize = 0;
 
     public static void main(String[] args) {
-        Boolean[] test = {true,false,true,false,true,false};
-        List t = Arrays.asList(test).subList(0,4);
-        test(t);
-        if (messageLength%chunkSize != 0){
-            paddingSize =chunkSize-messageLength %chunkSize;
+
+        if (messageLength % chunkSize != 0) {
+            paddingSize = chunkSize - messageLength % chunkSize;
             messageLength = messageLength + paddingSize;
-            System.out.println("Padding size " + paddingSize + " message length " +messageLength);
+//            System.out.println("Padding size " + paddingSize + " message length " +messageLength);
         }
         Random rand = new Random();
+        List<List<Boolean>> parityMessage = new ArrayList<>();
+
         List<Boolean> message = new ArrayList<>();
-        for (int i = 1; i < messageLength+1; i++) {
+        List<Boolean> totalMessage = new ArrayList<>();
+        for (int i = 0; i < messageLength; i++) {
 //            System.out.println(i);
-            if ((i) % chunkSize == 0) {
-            System.out.println(Arrays.toString(message.toArray()) + " i " +i);
+            Boolean test = rand.nextBoolean();
+            message.add(test);
+            totalMessage.add(test);
+            if ((i + 1) % chunkSize == 0) {
+                parityMessage.add(makeChunk(message));
                 message.clear();
             }
 
-            message.add(rand.nextBoolean());
 //            }
 //            message[i] = rand.nextBoolean();
         }
+
+        System.out.println(Arrays.toString(totalMessage.toArray()));
+
+        List<Boolean> lst = parityMessage.stream()
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+        ArrayList<Boolean> test = new ArrayList<>();
+        test.addAll(lst);
+        test.set(4,!test.get(4));
+//        System.out.println(Arrays.toString(lst.toArray()));
+//        System.out.println("Test size is " + test.size());
+
+        List<List<Boolean>> chunkList = new ArrayList<>();
+        for (int i = 0; i < lst.size() / parityChunkSize; i++) {
+//            System.out.println("i is " + i + " parity chunk size " + parityChunkSize + " sublist is " + Arrays.toString(test.subList(i,parityChunkSize+i).toArray()));
+////            System.out.println(test.get(i*parityChunkSize));
+//            System.out.println("This is really fucking werid + " + (parityChunkSize+i));
+//            System.out.println(i*parityChunkSize + " "+ parityChunkSize+i);
+            List<Boolean> t = decodeChunk(test.subList(i * parityChunkSize, (parityChunkSize + i * parityChunkSize)));
+            chunkList.add(t);
+        }
+        lst.clear();
+        lst = chunkList.stream()
+                .flatMap(x -> x.stream())
+                .collect(Collectors.toList());
+        System.out.println(Arrays.toString(lst.toArray()));
+        System.out.println(lst.equals(totalMessage));
+
 //        test();
 //
 //        for (int i = 0 ; i < message.size(); i++) {
@@ -59,7 +91,7 @@ public class HammingCode {
     }
 
 
-    private static List<Boolean> decodeChunk(List<Boolean> array, int r) {
+    private static List<Boolean> decodeChunk(List<Boolean> array) {
         List<Boolean> retArray = new ArrayList<>();
         boolean wrongExists = false;
         int total = 0;
@@ -98,7 +130,7 @@ public class HammingCode {
     }
 
 
-    private static List<Boolean> makeChunk(List<Boolean> array, int numParityBits) {
+    private static List<Boolean> makeChunk(List<Boolean> array) {
         List<Boolean> messageArray = new ArrayList<>();
 //        System.out.println("EM");
         int count = 0;
