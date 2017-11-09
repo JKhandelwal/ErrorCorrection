@@ -7,25 +7,34 @@ import java.util.*;
  */
 public class HammingCode {
     private static int r = 3;
-    private static int messageLength = 200;
+    private static int messageLength = 43;
     private static int chunkSize = ((int) Math.pow(2, r) - r - 1);
     private static int parityChunkSize = chunkSize + r;
+    private static int paddingSize =0;
 
     public static void main(String[] args) {
-//        Boolean[] test = {true,false,true,false,true,false};
-//        List t = Arrays.asList(test).subList(0,4);
-//        test(t);
+        Boolean[] test = {true,false,true,false,true,false};
+        List t = Arrays.asList(test).subList(0,4);
+        test(t);
+        if (messageLength%chunkSize != 0){
+            paddingSize =chunkSize-messageLength %chunkSize;
+            messageLength = messageLength + paddingSize;
+            System.out.println("Padding size " + paddingSize + " message length " +messageLength);
+        }
         Random rand = new Random();
         List<Boolean> message = new ArrayList<>();
-        for (int i = 0; i < chunkSize * 2; i++) {
+        for (int i = 1; i < messageLength+1; i++) {
 //            System.out.println(i);
-            if ((i) % chunkSize == 0) message.clear();
+            if ((i) % chunkSize == 0) {
+            System.out.println(Arrays.toString(message.toArray()) + " i " +i);
+                message.clear();
+            }
 
             message.add(rand.nextBoolean());
 //            }
-            System.out.println(Arrays.toString(message.toArray()));
 //            message[i] = rand.nextBoolean();
         }
+//        test();
 //
 //        for (int i = 0 ; i < message.size(); i++) {
 //            System.out.println(Arrays.toString(message.toArray()));
@@ -45,6 +54,7 @@ public class HammingCode {
     }
 
     public static void test(List<Boolean> array) {
+        System.out.println(array.size());
         array.forEach(System.out::println);
     }
 
