@@ -1,3 +1,4 @@
+import java.sql.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -14,16 +15,37 @@ public class HammingCode {
         HammingCode h = new HammingCode();
         int length = 800;
         int r =4;
+        double p = 0.4;
         List<Boolean> message = h.generateMessage(length);
         System.out.println("initial message is " + Arrays.toString(message.toArray()));
         List<Boolean> unpaddedMessage = new ArrayList<>();
         unpaddedMessage.addAll(message);
+
         h.addPadding(message, r);
+
         ArrayList<Boolean> encodedList = h.encodeMessage(message);
+        h.propogateError(message,p);
+
+
         System.out.println("Encoded message is " + Arrays.toString(encodedList.toArray()));
         List<Boolean> lst = h.decodeMessage(encodedList);
         System.out.println("Final message is   " + Arrays.toString(lst.toArray()));
         System.out.println(lst.equals(unpaddedMessage));
+    }
+
+    public void propogateError(List<Boolean> message,double error){
+        int count =0;
+        ArrayList<Integer> list = new ArrayList<>();
+        Random rand = new Random();
+        for(int i=0;i<message.size();i++){
+            if (rand.nextDouble() < error){
+                message.set(i,!message.get(i));
+                count++;
+                list.add(i);
+            }
+        }
+        System.out.println(count);
+        System.out.println(Arrays.toString(list.toArray()));
     }
 
     public List<Boolean> decodeMessage(List<Boolean> encodedList) {
