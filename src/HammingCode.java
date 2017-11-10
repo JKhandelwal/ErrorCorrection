@@ -1,5 +1,3 @@
-
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -7,91 +5,83 @@ import java.util.stream.Collectors;
  * Created by jalajkhandelwal on 05/11/2017.
  */
 public class HammingCode {
-    private static int r = 5;
-    private static int messageLength = 1000;
-    private static int chunkSize = ((int) Math.pow(2, r) - r - 1);
-    private static int parityChunkSize = chunkSize + r;
-    private static int paddingSize = 0;
+    private int r;
+    private int chunkSize;
+    private int parityChunkSize;
+    private int paddingSize = 0;
 
     public static void main(String[] args) {
+        HammingCode h = new HammingCode();
+        int length = 800;
+        int r =4;
+        List<Boolean> message = h.generateMessage(length);
+        System.out.println("initial message is " + Arrays.toString(message.toArray()));
+        List<Boolean> unpaddedMessage = new ArrayList<>();
+        unpaddedMessage.addAll(message);
+        h.addPadding(message, r);
+        ArrayList<Boolean> encodedList = h.encodeMessage(message);
+        System.out.println("Encoded message is " + Arrays.toString(encodedList.toArray()));
+        List<Boolean> lst = h.decodeMessage(encodedList);
+        System.out.println("Final message is   " + Arrays.toString(lst.toArray()));
+        System.out.println(lst.equals(unpaddedMessage));
+    }
 
-        if (messageLength % chunkSize != 0) {
-            paddingSize = chunkSize - messageLength % chunkSize;
-            messageLength = messageLength + paddingSize;
-//            System.out.println("Padding size " + paddingSize + " message length " +messageLength);
+    public List<Boolean> decodeMessage(List<Boolean> encodedList) {
+        List<List<Boolean>> chunkList = new ArrayList<>();
+        for (int i = 0; i < encodedList.size() / parityChunkSize; i++) {
+            List<Boolean> t = decodeChunk(encodedList.subList(i * parityChunkSize, (parityChunkSize + i * parityChunkSize)));
+            chunkList.add(t);
         }
-        Random rand = new Random();
+        List<Boolean> lst = chunkList.stream()
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+        lst = lst.subList(0, lst.size() - paddingSize);
+        return lst;
+    }
+
+    public ArrayList<Boolean> encodeMessage(List<Boolean> message) {
+
         List<List<Boolean>> parityMessage = new ArrayList<>();
-
-        List<Boolean> message = new ArrayList<>();
-        List<Boolean> totalMessage = new ArrayList<>();
-        for (int i = 0; i < messageLength; i++) {
-//            System.out.println(i);
-            Boolean test = rand.nextBoolean();
-            message.add(test);
-            totalMessage.add(test);
-            if ((i + 1) % chunkSize == 0) {
-                parityMessage.add(makeChunk(message));
-                message.clear();
-            }
-
-//            }
-//            message[i] = rand.nextBoolean();
+        for (int i = 0; i < message.size() / chunkSize; i++) {
+            parityMessage.add(makeChunk(message.subList(i * chunkSize, (chunkSize + i * chunkSize))));
         }
-
-        System.out.println(Arrays.toString(totalMessage.toArray()));
 
         List<Boolean> lst = parityMessage.stream()
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
-        ArrayList<Boolean> test = new ArrayList<>();
-        test.addAll(lst);
-        test.set(4,!test.get(4));
-//        System.out.println(Arrays.toString(lst.toArray()));
-//        System.out.println("Test size is " + test.size());
+        ArrayList<Boolean> encodedList = new ArrayList<>();
+        encodedList.addAll(lst);
+        return encodedList;
+    }
 
-        List<List<Boolean>> chunkList = new ArrayList<>();
-        for (int i = 0; i < lst.size() / parityChunkSize; i++) {
-//            System.out.println("i is " + i + " parity chunk size " + parityChunkSize + " sublist is " + Arrays.toString(test.subList(i,parityChunkSize+i).toArray()));
-////            System.out.println(test.get(i*parityChunkSize));
-//            System.out.println("This is really fucking werid + " + (parityChunkSize+i));
-//            System.out.println(i*parityChunkSize + " "+ parityChunkSize+i);
-            List<Boolean> t = decodeChunk(test.subList(i * parityChunkSize, (parityChunkSize + i * parityChunkSize)));
-            chunkList.add(t);
+    public List<Boolean> generateMessage(int size) {
+        Random rand = new Random();
+
+        List<Boolean> message = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            Boolean test = rand.nextBoolean();
+            message.add(test);
         }
-        lst.clear();
-        lst = chunkList.stream()
-                .flatMap(x -> x.stream())
-                .collect(Collectors.toList());
-        System.out.println(Arrays.toString(lst.toArray()));
-        System.out.println(lst.equals(totalMessage));
-
-//        test();
-//
-//        for (int i = 0 ; i < message.size(); i++) {
-//            System.out.println(Arrays.toString(message.toArray()));
-////            message.toArray();
-//            List<Boolean> encodedChunk = makeChunk(message, r);
-////            System.out.println();
-//            System.out.println("Encoded String is "+Arrays.toString(encodedChunk.toArray()));
-//            encodedChunk.set(i ,!encodedChunk.get(i));
-////            System.out.println();
-//            System.out.println("Flipped String is "+ Arrays.toString(encodedChunk.toArray()));
-//            List<Boolean> decodedChunk = decodeChunk(encodedChunk, r);
-//            System.out.println(Arrays.toString(decodedChunk.toArray()));
-////            System.out.println(Arrays.toString(decodedChunk));
-//            System.out.println(decodedChunk.equals(message) + "\n");
-////            System.out.println(Collections.equals(decodedChunk, message)+"\n");
-//        }
+        return message;
     }
 
-    public static void test(List<Boolean> array) {
-        System.out.println(array.size());
-        array.forEach(System.out::println);
+    public void addPadding(List<Boolean> message,int r) {
+        this.r = r;
+        this.chunkSize = ((int) Math.pow(2, r) - r - 1);
+        this.parityChunkSize = chunkSize + r;
+        System.out.println(message.size());
+        if (message.size() % chunkSize != 0) {
+            paddingSize = chunkSize - message.size() % chunkSize;
+            int i = 0;
+            while (i < paddingSize) {
+                message.add(false);
+                i++;
+            }
+        }
+
     }
 
-
-    private static List<Boolean> decodeChunk(List<Boolean> array) {
+    private List<Boolean> decodeChunk(List<Boolean> array) {
         List<Boolean> retArray = new ArrayList<>();
         boolean wrongExists = false;
         int total = 0;
@@ -113,44 +103,35 @@ public class HammingCode {
         }
 
         if (wrongExists) {
+            System.out.println(total);
             if ((total - 1) < parityChunkSize) {
                 array.set(total - 1, !array.get(total - 1));
-//                array[total-1] = !array.get(total-1);
             }
         }
 
-        int index = 0;
         for (int i = 0; i < parityChunkSize; i++) {
             if (Integer.bitCount(i + 1) != 1) {
                 retArray.add(array.get(i));
-//                retArray[index++] = array[i];
             }
         }
         return retArray;
     }
 
 
-    private static List<Boolean> makeChunk(List<Boolean> array) {
+    private List<Boolean> makeChunk(List<Boolean> array) {
         List<Boolean> messageArray = new ArrayList<>();
-//        System.out.println("EM");
         int count = 0;
         for (int i = 0; i < parityChunkSize; i++) {
             if (Integer.bitCount(i + 1) != 1) {
-//                System.out.println("i is " + array.get(count));
                 messageArray.add(array.get(count++));
-//                messageArray[i] = array.get(count++);
             } else messageArray.add(null);
         }
         messageArray.toArray();
-//        System.out.println("stuff");
-//        System.out.println(Arrays.toString(messageArray.toArray()));
         insertParity(messageArray);
         return messageArray;
     }
 
-    private static void insertParity(List<Boolean> array) {
-//        assert (array.size()!= 0);
-//        System.out.println(array.size());
+    private void insertParity(List<Boolean> array) {
         array.toArray();
         for (int i = 0; i < r; i++) {
             int count = 0;
@@ -165,13 +146,10 @@ public class HammingCode {
                 startPoint += numToJump * 2;
 
             }
-            //FIX THIS
-            //TODO
-//            System.out.println(array.get(0));
             array.set((1 << i) - 1, !(count % 2 == 0));
         }
     }
-
+}
 
 //    private static Boolean[] decodeChunk(Boolean[] array, int r) {
 //        Boolean[] retArray = new Boolean[array.length - r];
@@ -238,5 +216,24 @@ public class HammingCode {
 //            array[(1<<i)-1] = !(count%2 ==0);
 //        }
 //    }
-}
+    //        System.out.println(Arrays.toString(encodedList.toArray()));
+
+//        System.out.println(Arrays.toString(encodedList.toArray()));
+
+    //        System.out.println(Arrays.toString(lst.toArray()));
+//        System.out.println("Test size is " + encodedList.size());
+
+
+//                    System.out.println("initial " + Arrays.toString(encodedList.subList(i * parityChunkSize, (parityChunkSize + i * parityChunkSize)).toArray()));
+//                    if (i ==1){
+//            encodedList.set(10,!encodedList.get(10));
+////            encodedList.set(12,!encodedList.get(12));
+//                    }
+//            System.out.println("after   "+Arrays.toString(encodedList.subList(i * parityChunkSize, (parityChunkSize + i * parityChunkSize)).toArray()));
+//            System.out.println();
+//            System.out.println("i is " + i + " parity chunk size " + parityChunkSize + " sublist is " + Arrays.toString(encodedList.subList(i,parityChunkSize+i).toArray()));
+////            System.out.println(encodedList.get(i*parityChunkSize));
+//            System.out.println("This is really fucking werid + " + (parityChunkSize+i));
+//            System.out.println(i*parityChunkSize + " "+ parityChunkSize+i);
+
 
