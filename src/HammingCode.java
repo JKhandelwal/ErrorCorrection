@@ -15,7 +15,7 @@ public class HammingCode {
         HammingCode h = new HammingCode();
         int length = 800;
         int r =4;
-        double p = 0.4;
+        double p = 0.5;
         List<Boolean> message = h.generateMessage(length);
         System.out.println("initial message is " + Arrays.toString(message.toArray()));
         List<Boolean> unpaddedMessage = new ArrayList<>();
@@ -24,7 +24,7 @@ public class HammingCode {
         h.addPadding(message, r);
 
         ArrayList<Boolean> encodedList = h.encodeMessage(message);
-        h.propogateError(message,p);
+        h.propogateError(encodedList,p);
 
 
         System.out.println("Encoded message is " + Arrays.toString(encodedList.toArray()));
