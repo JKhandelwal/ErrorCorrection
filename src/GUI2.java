@@ -4,6 +4,9 @@
  * and open the template in the editor.
  */
 
+import javax.swing.*;
+import java.awt.*;
+
 /**
  *
  * @author jk218
@@ -35,12 +38,12 @@ public class GUI2 extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         createdMessage = new javax.swing.JTextArea();
         jScrollPane2 = new javax.swing.JScrollPane();
-        statsTable = new javax.swing.JTable();
+//        statsTable =
         jScrollPane3 = new javax.swing.JScrollPane();
         decodedMessage = new javax.swing.JTextArea();
         generateCodeLabel1 = new javax.swing.JLabel();
         viewStats = new javax.swing.JButton();
-
+        dialog = new JDialog();
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         probabilityText.addActionListener(new java.awt.event.ActionListener() {
@@ -66,27 +69,8 @@ public class GUI2 extends javax.swing.JFrame {
         createdMessage.setRows(5);
         jScrollPane1.setViewportView(createdMessage);
 
-        statsTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {"2", null, null, null, null, null},
-                {"3", null, null, null, null, null},
-                {"4", null, null, null, null, null},
-                {"5", null, null, null, null, null},
-                {"6", null, null, null, null, null}
-            },
-            new String [] {
-                " R Value", "Uncorrected Bit Count", "Uncorrected Chunk Count", "Percentage bits uncorrected", "Percentage of Chunks Affected", "Information rate"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, true, true, true, true, true
-            };
 
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane2.setViewportView(statsTable);
+//        jScrollPane2.setViewportView(statsTable);
 
         decodedMessage.setColumns(20);
         decodedMessage.setRows(5);
@@ -177,6 +161,54 @@ public class GUI2 extends javax.swing.JFrame {
     }//GEN-LAST:event_goButtonActionPerformed
 
     private void viewStatsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewStatsActionPerformed
+                dialog.setVisible(false);
+
+
+         final Dimension SCREEN_DIMENSION = Toolkit.getDefaultToolkit().getScreenSize();
+
+//I'd also make this static and final and insert them at the class definition
+        int dialogWidth = SCREEN_DIMENSION.width / 4; //example; a quarter of the screen size
+        int dialogHeight = SCREEN_DIMENSION.height / 4; //example
+
+        int dialogX = SCREEN_DIMENSION.width / 2 - dialogWidth / 2; //position right in the middle of the screen
+        int dialogY = SCREEN_DIMENSION.height / 2 - dialogHeight / 2;
+//        dialog = new JDialog();
+        dialog.setBounds(dialogX,dialogY,dialogWidth,dialogHeight);
+
+
+        dialog.setTitle("Statistics");
+        dialog.setMinimumSize(new Dimension(1000,1000));
+        dialog.setMaximumSize(new Dimension(1000,1000));
+        dialog.setPreferredSize(new Dimension(1000,1000));
+        dialog.setSize(new Dimension(1000,1000));
+        statsTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {"2", null, null, null, null, null},
+                {"3", null, null, null, null, null},
+                {"4", null, null, null, null, null},
+                {"5", null, null, null, null, null},
+                {"6", null, null, null, null, null}
+            },
+            new String [] {
+                " R Value", "Uncorrected Bit Count", "Uncorrected Chunk Count", "Percentage bits uncorrected", "Percentage of Chunks Affected", "Information rate"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, true, true, true, true, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+//                dialog.get
+
+        dialog =  new JDialog();
+        JScrollPane js = new JScrollPane();
+        js.setViewportView(statsTable);
+        dialog.add(js);
+//        dialog.pack();
+        dialog.setVisible(true);
         // TODO add your handling code here:
     }//GEN-LAST:event_viewStatsActionPerformed
 
@@ -211,6 +243,7 @@ public class GUI2 extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new GUI2().setVisible(true);
+
             }
         });
     }
@@ -228,7 +261,8 @@ public class GUI2 extends javax.swing.JFrame {
     private javax.swing.JLabel probabilityLabel;
     private javax.swing.JLabel probabilityLabel1;
     private javax.swing.JTextField probabilityText;
-    private javax.swing.JTable statsTable;
+    private javax.swing.JTable statsTable  =new javax.swing.JTable();
     private javax.swing.JButton viewStats;
+    private JDialog dialog;
     // End of variables declaration//GEN-END:variables
 }
