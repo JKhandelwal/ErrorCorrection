@@ -5,6 +5,9 @@
  */
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableColumnModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 
 /**
@@ -18,6 +21,8 @@ public class GUI2 extends javax.swing.JFrame {
      */
     public GUI2() {
         initComponents();
+        setLocationRelativeTo(rootPane);
+        setTitle("Hamming Codes");
     }
 
     /**
@@ -37,13 +42,7 @@ public class GUI2 extends javax.swing.JFrame {
         codeLength = new javax.swing.JSpinner();
         jScrollPane1 = new javax.swing.JScrollPane();
         createdMessage = new javax.swing.JTextArea();
-        jScrollPane2 = new javax.swing.JScrollPane();
-//        statsTable =
-        jScrollPane3 = new javax.swing.JScrollPane();
-        decodedMessage = new javax.swing.JTextArea();
-        generateCodeLabel1 = new javax.swing.JLabel();
-        viewStats = new javax.swing.JButton();
-        dialog = new JDialog();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         probabilityText.addActionListener(new java.awt.event.ActionListener() {
@@ -69,22 +68,6 @@ public class GUI2 extends javax.swing.JFrame {
         createdMessage.setRows(5);
         jScrollPane1.setViewportView(createdMessage);
 
-
-//        jScrollPane2.setViewportView(statsTable);
-
-        decodedMessage.setColumns(20);
-        decodedMessage.setRows(5);
-        jScrollPane3.setViewportView(decodedMessage);
-
-        generateCodeLabel1.setText("Decoded code");
-
-        viewStats.setText("View Statistics");
-        viewStats.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewStatsActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -92,31 +75,22 @@ public class GUI2 extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 412, Short.MAX_VALUE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(probabilityLabel)
+                            .addGap(18, 18, 18)
+                            .addComponent(probabilityText, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(probabilityLabel1)
+                            .addGap(24, 24, 24)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(goButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(codeLength))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(probabilityLabel)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(probabilityText, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(probabilityLabel1)
-                                    .addGap(24, 24, 24)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(goButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(codeLength))))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(generateCodeLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(generateCodeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(20, 20, 20)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(viewStats, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addComponent(generateCodeLabel)
+                        .addGap(20, 20, 20)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(75, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -134,19 +108,11 @@ public class GUI2 extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(goButton)
                         .addGap(12, 12, 12)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(75, 75, 75)
-                        .addComponent(generateCodeLabel)
-                        .addGap(48, 48, 48)
-                        .addComponent(generateCodeLabel1)))
-                .addGap(18, 18, 18)
-                .addComponent(viewStats)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(79, Short.MAX_VALUE))
+                        .addComponent(generateCodeLabel)))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
 
         pack();
@@ -158,13 +124,12 @@ public class GUI2 extends javax.swing.JFrame {
 
     private void goButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_goButtonActionPerformed
+        // TODO add your handling code here:
+        dialog.setVisible(false);
+        JTable statsTable = new JTable();
 
-    private void viewStatsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewStatsActionPerformed
-                dialog.setVisible(false);
 
-
-         final Dimension SCREEN_DIMENSION = Toolkit.getDefaultToolkit().getScreenSize();
+        final Dimension SCREEN_DIMENSION = Toolkit.getDefaultToolkit().getScreenSize();
 
 //I'd also make this static and final and insert them at the class definition
         int dialogWidth = SCREEN_DIMENSION.width / 4; //example; a quarter of the screen size
@@ -177,40 +142,60 @@ public class GUI2 extends javax.swing.JFrame {
 
 
         dialog.setTitle("Statistics");
-        dialog.setMinimumSize(new Dimension(1000,1000));
-        dialog.setMaximumSize(new Dimension(1000,1000));
-        dialog.setPreferredSize(new Dimension(1000,1000));
-        dialog.setSize(new Dimension(1000,1000));
+
         statsTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {"2", null, null, null, null, null},
-                {"3", null, null, null, null, null},
-                {"4", null, null, null, null, null},
-                {"5", null, null, null, null, null},
-                {"6", null, null, null, null, null}
-            },
-            new String [] {
-                " R Value", "Uncorrected Bit Count", "Uncorrected Chunk Count", "Percentage bits uncorrected", "Percentage of Chunks Affected", "Information rate"
-            }
+                new Object [][] {
+                        {"2", null, null, null, null, null},
+                        {"3", null, null, null, null, null},
+                        {"4", null, null, null, null, null},
+                        {"5", null, null, null, null, null},
+                        {"6", null, null, null, null, null}
+                },
+                new String [] {
+                        " R Value", "Uncorrected Bit Count", "Uncorrected Chunk Count", "Percentage bits uncorrected", "Percentage of Chunks Affected", "Information rate"
+                }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, true, true, true, true, true
+                    false, true, true, true, true, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-//                dialog.get
 
-        dialog =  new JDialog();
+        statsTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        int newDialogWidth =0;
+        for(int i=0;i<statsTable.getColumnCount();i++){
+            DefaultTableColumnModel colModel = (DefaultTableColumnModel) statsTable.getColumnModel();
+            TableColumn col = colModel.getColumn(i);
+            int width = 0;
+
+            TableCellRenderer renderer = col.getHeaderRenderer();
+            if (renderer == null) {
+                renderer = statsTable.getTableHeader().getDefaultRenderer();
+            }
+            Component comp = renderer.getTableCellRendererComponent(statsTable, col.getHeaderValue(), false,
+                    false, 0, 0);
+            width = comp.getPreferredSize().width;
+            col.setPreferredWidth(width+2);
+            newDialogWidth+=width+2;
+        }
+
+        int height = 175;
+        dialog.setMinimumSize(new Dimension(newDialogWidth+2,height));
+        dialog.setMaximumSize(new Dimension(newDialogWidth+2,height));
+        dialog.setPreferredSize(new Dimension(newDialogWidth+2,height));
+        dialog.setSize(new Dimension(newDialogWidth+2,height));
+//                dialog.get
         JScrollPane js = new JScrollPane();
         js.setViewportView(statsTable);
         dialog.add(js);
 //        dialog.pack();
+        dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
-        // TODO add your handling code here:
-    }//GEN-LAST:event_viewStatsActionPerformed
+        dialog.setVisible(true);
+    }//GEN-LAST:event_goButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -251,18 +236,12 @@ public class GUI2 extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JSpinner codeLength;
     private javax.swing.JTextArea createdMessage;
-    private javax.swing.JTextArea decodedMessage;
     private javax.swing.JLabel generateCodeLabel;
-    private javax.swing.JLabel generateCodeLabel1;
     private javax.swing.JButton goButton;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel probabilityLabel;
     private javax.swing.JLabel probabilityLabel1;
     private javax.swing.JTextField probabilityText;
-    private javax.swing.JTable statsTable  =new javax.swing.JTable();
-    private javax.swing.JButton viewStats;
-    private JDialog dialog;
+    private JDialog dialog = new JDialog();
     // End of variables declaration//GEN-END:variables
 }

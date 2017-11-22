@@ -31,6 +31,8 @@ public class HammingCode {
         List<Boolean> lst = h.decodeMessage(encodedList);
         System.out.println("Final message is   " + Arrays.toString(lst.toArray()));
         System.out.println(lst.equals(unpaddedMessage));
+
+
     }
 
     public void propogateError(List<Boolean> message,double error){
