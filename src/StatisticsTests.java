@@ -24,7 +24,7 @@ public class StatisticsTests {
     }
 
     public static void length() throws Exception{
-        BufferedWriter bwLength = new BufferedWriter(new FileWriter("data/lengthvar" + repeats + ".csv", false));
+        BufferedWriter bwLength = new BufferedWriter(new FileWriter("stats/lengthvar" + repeats + ".csv", false));
         for (int j = 10; j < 1010; j += 10) {
             int uncorBitC = 0;
             int uncorC = 0;
