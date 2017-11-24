@@ -14,28 +14,32 @@ public class HammingMatrices {
     public static void main(String[] args) {
         HammingMatrices hm = new HammingMatrices();
         int r;
+        int counter =0;
+        int length = 500;
+
+//        for (int l =0;l < 1000000;l++){
         for (int k = 2; k < 7;k++ ) {
             r = k;
 //        for (int i = 2; i < 7;i++ ){
             int[][] G = hm.generateG(r);
             int[][] H = hm.generateH(G);
             HashMap<String, String> syndromeTable = hm.generateSyndromeTable(H);
-            printMatrix(G);
-            System.out.println();
-            printMatrix(H);
-            System.out.println();
-            hm.printSyndromeTable(syndromeTable);
+//            printMatrix(G);
+//            System.out.println();
+//            printMatrix(H);
+//            System.out.println();
+//            hm.printSyndromeTable(syndromeTable);
             int chunkSize = (int) Math.pow(2, r) - r - 1;
             int[] testy = new int[chunkSize];
             Random rand = new Random();
             for (int i = 0; i < testy.length; i++) {
-                testy[i] = (int) rand.nextDouble();
+                testy[i] = (int) rand.nextInt(1);
+                System.out.println(testy[i]);
             }
-            System.out.println(Arrays.toString(testy));
+//            System.out.println(Arrays.toString(testy));
             int[] newArray = hm.multiplyMatrices(testy, G);
-            int[] otherArray = Arrays.copyOf(newArray, newArray.length);
-            System.out.println(Arrays.toString(newArray));
-            System.out.println(Arrays.toString(otherArray));
+//            System.out.println(Arrays.toString(newArray));
+//            System.out.println(Arrays.toString(otherArray));
             for (int j = 0; j < chunkSize + r; j++) {
                 newArray[j] = newArray[j] ^ 1;
                 int[] parityBit = hm.multiplyMatrices(newArray, H);
@@ -47,7 +51,7 @@ public class HammingMatrices {
                 String t = syndromeTable.get(s.toString());
                 for (int i = 0; i < t.length(); i++) {
                     if (t.charAt(i) == '1') {
-                        System.out.println(i);
+//                        System.out.println(i);
                         newArray[i] = newArray[i] ^ 1;
                     }
                 }
@@ -55,15 +59,17 @@ public class HammingMatrices {
                 System.arraycopy(newArray, 0, finalAr, 0, finalAr.length);
 
                 if (Arrays.equals(finalAr, testy)) {
-                    System.out.println("HUZZAH");
+//                    System.out.println("HUZZAH");
+                    counter++;
                 } else {
                     System.out.println("BROKE HERE " + j + " " + r);
                     System.exit(0);
                 }
             }
 
+//        }
         }
-        System.out.println("DONE");
+        System.out.println("DONE with count "+counter);
     }
 
     private void printSyndromeTable(HashMap<String, String> syndromeTable) {
@@ -99,6 +105,10 @@ public class HammingMatrices {
         }
 
         return g;
+    }
+
+    private int[] chunkCode(int[] a,int start, int end){
+        return Arrays.copyOfRange(a,start,end);
     }
 
     private int[][] generateH(int[][] G) {
